@@ -1,0 +1,78 @@
+#############################  Animated  ###########################
+API nativa de React Native que permite realizar animaciones en un hilo diferente al de JavaScript, como seria nativeDriver.
+
+///////////////////// Componentes Animables ////////////////////////
+Animated exporta los siguientes componentes animables: 
+# Animated.Image
+# Animated.ScrollView
+# Animated.Text
+# Animated.View
+# Animated.FlatList
+# Animated.SectionList
+NOTA: Se puede usar createAnimatedComponent() para hacer a un componente animable.
+
+/////// El valor se puede inicializar de diferentes formas: ////////
+
+# 1
+const valor = useAnimatedValue(valorInicial)
+
+# 2
+const valor = useRef(Animated.Value(valorInicial)).current
+
+# 3
+const valor = useState(Animated.Value(valorInicial))[0]
+
+///// Animated proporciona 3 tipos de animaciones diferentes: /////
+/////////////////////// Estructura General /////////////////////////
+	La estructura general es la siguiente: 
+		Animated.decay(value,config)
+	-Value: Variable que contiene el valor animado
+	-Config: Objeto que contiene las configuraciónes
+	respectivas al tipo de animación.
+	
+# decay()
+Inicia con una velocidad y la va bajando gradualmente hasta detenerse (hasta llegar al valor especificado)
+
+	config = {
+		velocity: Velocidad inicial. /Requerido/
+		deceleration: Ritmo/tasa de decaida. /Default 0.997/
+		isInteraction: ¿La animación crea un "interaction 				 
+	handler" en el interactionManager? /Default true/
+		useNativeDriver: ¿Usa driver nativo? /Required/
+	}
+# spring()
+Provee un modelo básico de las físicas de un "resorte".
+
+	config = { 
+		...(https://reactnative.dev/docs/animated#spring)
+	}
+# timing()
+Anima un valor basado en un tiempo especificado usando funciones de "easing".
+
+	config = {
+		duration:
+		easing: Funcion de Easing para definir curva 			
+		/Default Easing.inOut(Easing.ease)/
+		delay: Empieza la animación con un retraso (despues 		 
+		de) de los segundos especificados. /Default 0/
+		isInteraction /Default true/
+		useNativeDriver /Required/
+	}
+	
+
+//////////////////// Componiendo animaciones /////////////////////
+# Animated.delay()
+Empieza una animación pero despues de el tiempo especificado
+
+# Animated.parallel()
+Inicia un número de animaciónes en el tiempo especificado
+
+# Animated.sequence()
+Empieza la animación en orden, esperando a que se complete cada una para seguir con la siguiente; o sea, las inicia de manera secuencial
+
+# Animated.stagger()
+Da inicio a una animación, en orden y en paralelo, pero con delays sucesivos
+
+########################## Pan Responder ###########################
+PanResponder es una API nativa de React Native que permite establecer un "escuchador" a los movimientos que hace el usuario en la pantalla.
+
