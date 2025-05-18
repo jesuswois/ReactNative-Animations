@@ -1,118 +1,69 @@
-import React = require("react");
-import { Button, Dimensions, Easing, StyleSheet, Text, TouchableOpacity, useAnimatedValue, View } from "react-native";
-import { Animated } from "react-native";
-import { useFonts, Jost_200ExtraLight, Jost_400Regular, Jost_600SemiBold } from '@expo-google-fonts/jost'
-export default function Page() {
-  const [faded, setFaded] = React.useState(false)
-  let [fontIsLoaded] = useFonts({
-    Jost_200ExtraLight,
-    Jost_400Regular,
-    Jost_600SemiBold
+import { Animated, Button, StyleSheet, Text, useAnimatedValue, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Jost_300Light, Jost_500Medium, Jost_900Black, Jost_900Black_Italic, useFonts } from '@expo-google-fonts/jost'
+import { animations } from './animations/indexAnimations'
+
+export default function index() {
+  // Preparación
+  const positionVertical = useAnimatedValue(100)
+  const positionUpperValue = useAnimatedValue(-250)
+  const positionLowerValue = Animated.subtract(0, positionUpperValue)
+  const opacityTitleValue = useAnimatedValue(0)
+  const opacityTextValue = useAnimatedValue(0)
+  const AnimatedText = Animated.createAnimatedComponent(Text)
+  const [fontIsLoaded] = useFonts({
+    Jost_500Medium,
+    Jost_300Light,
   })
-  console.log(Dimensions.get('screen').height)
-  console.log("Window: "+Dimensions.get('window').height)
-  const animated = useAnimatedValue(1)
-  const radius = useAnimatedValue(0)
-  const scaleValue = useAnimatedValue(0)
-  const scaleGrow = (value: number) => {
-    return Animated.timing(scaleValue, {
-      toValue: value,
-      duration: 1000,
-      useNativeDriver: true
-    })
+  // Animaciones
+  const titleMovement = animations.animate(positionUpperValue, 0, 1000)
+  const titleOpacity = animations.animate(opacityTitleValue, 1, 1000)
+  const textOpacity = animations.animate(opacityTextValue,1,1000)
+  const textEntry = animations.animate(positionVertical, 0, 1000)
+  const handleAction = () => {
+
   }
-  const sequence = () => {
+  useEffect(() => {
     Animated.sequence([
+      Animated.delay(1000),
       Animated.parallel([
-        scaleGrow(4),
-        radiusChange(15)
+        titleMovement,
+        titleOpacity
       ]),
       Animated.delay(500),
       Animated.parallel([
-        scaleGrow(1.5),
-        radiusChange(50)
-      ]),
-      Animated.delay(1200),
-      Animated.parallel([
-        radiusChange(5),
-        scaleGrow(0.5)
+        textOpacity,
+        textEntry
       ])
     ]).start()
-  }
-  const radiusChange = (value: number) => {
-    return Animated.timing(radius, {
-      toValue: value,
-      duration: 1000,
-      useNativeDriver: true
-    })
-  }
-  const fadeOut = () => {
-    Animated.timing(animated, {
-      toValue: 0,
-      easing: Easing.ease,
-      duration: 1000,
-      useNativeDriver: true
-    }).start()
-  }
-  const fadeIn = () => {
-    Animated.timing(animated, {
-      toValue: 1,
-      easing: Easing.ease,
-      duration: 1000,
-      useNativeDriver: true
-    }).start()
-  }
-  const handleFadeIn = () => {
-    fadeIn()
-    setFaded(!faded)
-  }
-  const handleFadeOut = () => {
-    fadeOut()
-    setFaded(!faded)
-  }
-  const handleAnimate = () => {
-    sequence()
-  }
+  })
   return (
     <View style={styles.container}>
-      <View style={styles.main}>
-        <Animated.View style={[{ opacity: animated }]}>
-          <Text style={styles.title}>Animation Playground</Text>
-          <Text style={styles.subtitle}>This application contains various examples/results of React Native's built in Animation API</Text>
-        </Animated.View>
-        <Button onPress={faded ? handleFadeOut : handleFadeIn} title={faded ? "Fade out" : "Fade in"}></Button>
-        {//<Animated.View style={{ borderRadius: radius, backgroundColor: "red", height: 100, width: 100, transform: [{ scale: scaleValue }], alignSelf: "center" }}>
-        }
-        <View style={{backgroundColor:"blue",position:"absolute",top:-25,left:-25,height:1158,width:50}}></View>
-        {//</Animated.View>
-        }<Button onPress={handleAnimate} title="Apply"></Button>
-      </View>
-    </View >
-  );
+      <View style={{height:"100%",width:"100%",backgroundColor:"red",position:"absolute",top:20,opacity:0.5}}></View>
+      <AnimatedText style={[styles.title, { transform: [{ translateX: positionUpperValue }], opacity: opacityTitleValue }]}>Animations</AnimatedText>
+      <AnimatedText style={[styles.title, { transform: [{ translateX: positionLowerValue }], opacity: opacityTitleValue }]}>Playground</AnimatedText>
+      <AnimatedText style={[styles.text, { transform: [{ translateY: positionVertical }], opacity: opacityTextValue }]}>Welcome to my personal Proyect! Here you'll find different scenarios i've made across my journey learning React Native's Animated API.</AnimatedText>
+      <Button onPress={handleAction} title='Animate'></Button>
+    </View>
+  )
 }
-
+// Estilos
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     alignItems: "center",
-    padding: 24,
-  },
-  main: {
-    flex: 1,
-    rowGap: 80,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
+    backgroundColor: "#eee"
   },
   title: {
-    fontSize: 40,
-    textAlign: "center",
-    fontFamily: 'Jost_600SemiBold'
+    fontFamily: 'Jost_500Medium',
+    fontSize: 50,
+    textAlign: "center"
   },
-  subtitle: {
-    fontSize: 28,
-    textAlign: "justify",
-    color: "#38434D",
-    fontFamily: 'Jost_400Regular'
-  },
-});
+  text: {
+    fontFamily: 'Jost_300Light',
+    textAlign:"center",
+    lineHeight:55,
+    fontSize: 35
+  }
+})
