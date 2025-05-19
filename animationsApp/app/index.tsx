@@ -10,6 +10,7 @@ export default function index() {
   const positionLowerValue = Animated.subtract(0, positionUpperValue)
   const opacityTitleValue = useAnimatedValue(0)
   const opacityTextValue = useAnimatedValue(0)
+  const sizeValue = useAnimatedValue(0)
   const AnimatedText = Animated.createAnimatedComponent(Text)
   const [fontIsLoaded] = useFonts({
     Jost_500Medium,
@@ -20,8 +21,9 @@ export default function index() {
   const titleOpacity = animations.animate(opacityTitleValue, 1, 1000)
   const textOpacity = animations.animate(opacityTextValue,1,1000)
   const textEntry = animations.animate(positionVertical, 0, 1000)
+  const resize = animations.animate(sizeValue,1,2000)
   const handleAction = () => {
-
+    resize.start()
   }
   useEffect(() => {
     Animated.sequence([
@@ -39,7 +41,13 @@ export default function index() {
   })
   return (
     <View style={styles.container}>
-      <View style={{height:"100%",width:"100%",backgroundColor:"red",position:"absolute",top:20,opacity:0.5}}></View>
+      <Animated.View style={{transform:[/*rotateX:sizeValue.interpolate({
+        inputRange:[0,1],
+        outputRange:['0deg','60deg']
+      })*/{skewY:sizeValue.interpolate({
+        inputRange:[0,1],
+        outputRange:['0deg','90deg']
+      })}],height:"120%",width:"110%",backgroundColor:"#eee",position:"absolute"}}></Animated.View>
       <AnimatedText style={[styles.title, { transform: [{ translateX: positionUpperValue }], opacity: opacityTitleValue }]}>Animations</AnimatedText>
       <AnimatedText style={[styles.title, { transform: [{ translateX: positionLowerValue }], opacity: opacityTitleValue }]}>Playground</AnimatedText>
       <AnimatedText style={[styles.text, { transform: [{ translateY: positionVertical }], opacity: opacityTextValue }]}>Welcome to my personal Proyect! Here you'll find different scenarios i've made across my journey learning React Native's Animated API.</AnimatedText>
@@ -53,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: "center",
-    backgroundColor: "#eee"
+    backgroundColor: "black"
   },
   title: {
     fontFamily: 'Jost_500Medium',
